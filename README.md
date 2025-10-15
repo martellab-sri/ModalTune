@@ -120,16 +120,6 @@ For out-of-distribution evaluation on a new test set, modify the paths and OOD c
 bash scripts/deploy_OOD_modaltune.sh
 ```
 
-## Model Architecture
-
-ModalTune implements a multi-modal architecture with:
-
-1. **Vision Encoder**: Pre-trained models (CONCH/TITAN/Prov-GigaPath)
-2. **Gene Encoder**: Pathway-based genomic feature encoding
-3. **Text Embeddings**: Clinical text embeddings via CONCH
-4. **Cross-Modal Fusion**: Adapter modules for multi-modal integration
-5. **MIL Aggregation**: Multiple Instance Learning for slide-level prediction
-
 ## Acknowledgments
 
 We would like to express our gratitude to the following projects and resources that have significantly contributed to the development of ModalTune.
