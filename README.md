@@ -103,7 +103,7 @@ bash scripts/submit_get_dataset.sh
 
 #### Single Cancer Type Training
 
-Ensure that the paths in `scripts/submit_modaltune.sh` are correctly set for your dataset and model (prov-gigapath/titan) configuration. Then run for each cancer type:
+Ensure that the paths in `scripts/submit_modaltune.sh` are correctly set for your dataset and model (prov-gigapath/titan) configuration. By default, we only consider imaging and genomic modalities. To include clinical information also ensure the paths are added and `$TYPE=clinical` in the `scripts/submit_modaltune.sh`. Then run for each cancer type:
 ```bash
 bash scripts/submit_modaltune.sh
 ```
