@@ -64,11 +64,11 @@ prov_gigapath #For running longnetvit with flash attention and other dependencie
 
 ### 1. Data Acquisition
 
-### TCGA Histopathology Images
+#### TCGA Histopathology Images
 
 Download TCGA whole slide images along with clinical data from the GDC Data Portal (https://portal.gdc.cancer.gov/)
 
-### Genomic Data (UCSC Xena Database)
+#### Genomic Data (UCSC Xena Database)
 
 Download genomic data from UCSC Xena Browser.
 
@@ -87,13 +87,13 @@ At the end ensure `utils/constants.py` has the correct paths set for your data d
 
 ### 3. Processing Raw Dataset
 
-### Extract Patch Features
+#### Extract Patch Features
 Patch features can be extracted using either TITAN or Prov-GigaPath models. Use the respective line in `scripts/submit_extract_patches.sh` to extract features.
 
 ```bash
 bash scripts/submit_extract_patches.sh
 ```
-### Process rest of the data
+#### Process rest of the data
 Use the scripts in `scripts/submit_get_dataset.sh` to process genomic data, clinical text and create dataset splits.
 ```bash
 bash scripts/submit_get_dataset.sh
@@ -168,4 +168,4 @@ If you use ModalTune in your research, please cite:
 ## Contact
 
 You can reach the authors by raising an issue in this repo or email them at
-vishwesh.ramanathan@mail.utoronto.ca/tonylt.xu@mail.utoronto.ca/a.martel@mail.utoronto.ca
+vishwesh.ramanathan@mail.utoronto.ca / tonylt.xu@mail.utoronto.ca / a.martel@mail.utoronto.ca
