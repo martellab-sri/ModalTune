@@ -1,5 +1,6 @@
 # ModalTune: Fine-Tuning Slide-Level Foundation Models with Multi-Modal Information for Multi-task Learning in Digital Pathology
-Code and data for the manuscript: [ICCV 2025] ModalTune: Fine-Tuning Slide-Level Foundation Models with Multi-Modal Information for Multi-task Learning in Digital Pathology. 
+Code and data for the manuscript: [ICCV 2025] ModalTune: Fine-Tuning Slide-Level Foundation Models with Multi-Modal Information for Multi-task Learning in Digital Pathology.   
+
 Linked preprint: https://arxiv.org/abs/2503.17564
 
 ## Description
@@ -38,7 +39,7 @@ ModalTune/
     └── submit_modaltune.sh         # Training pipeline
 ```
 
-## 📋 Requirements
+## Requirements
 
 ### Python Dependencies
 
@@ -61,28 +62,7 @@ prov_gigapath #For running longnetvit with flash attention and other dependencie
 
 ## Running
 
-### 1. Environment Setup
-
-```bash
-# Clone the repository
-git clone <repository-url>
-cd ModalTune
-
-# Create conda environment
-conda create -n modaltune python=3.8
-conda activate modaltune
-
-# Install PyTorch (adjust CUDA version as needed)
-conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
-
-# Install other dependencies
-pip install -r requirements.txt
-
-# Install CONCH (if using CONCH features)
-pip install git+https://github.com/mahmoodlab/CONCH.git
-```
-
-### 2. Data Acquisition
+### 1. Data Acquisition
 
 ### TCGA Histopathology Images
 
@@ -97,7 +77,7 @@ Pan-Cancer dataset was downloaded from [here](https://xenabrowser.net/datapages/
 For other individual cancer specific RNA seq, can be downloaded by navigating TCGA Hub in the Xena database.  (https://xenabrowser.net/datapages/).  
 
 
-### 3. Pre-trained Model Weights
+### 2. Pre-trained Model Weights
 We used the following foundation models in our experiments. 
 - **CONCH** (for text embeddings): https://github.com/mahmoodlab/CONCH
 - **TITAN** (for ModalTune TITAN): https://huggingface.co/MahmoodLab/TITAN
@@ -105,7 +85,7 @@ We used the following foundation models in our experiments.
 
 At the end ensure `utils/constants.py` has the correct paths set for your data directories.
 
-### 4. Processing Raw Dataset
+### 3. Processing Raw Dataset
 
 ### Extract Patch Features
 Patch features can be extracted using either TITAN or Prov-GigaPath models. Use the respective line in `scripts/submit_extract_patches.sh` to extract features.
@@ -140,7 +120,7 @@ For out-of-distribution evaluation on a new test set, modify the paths and OOD c
 bash scripts/deploy_OOD_modaltune.sh
 ```
 
-## 🧠 Model Architecture
+## Model Architecture
 
 ModalTune implements a multi-modal architecture with:
 
@@ -172,7 +152,7 @@ We would like to express our gratitude to the following projects and resources t
 - **TCGA**: [The Cancer Genome Atlas](https://portal.gdc.cancer.gov/)
 - **UCSC Xena**: [UCSC Xena Browser](https://xenabrowser.net/)
 
-## 📝 Citation
+## Citation
 
 If you use ModalTune in your research, please cite:
 
