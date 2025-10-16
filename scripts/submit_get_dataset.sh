@@ -9,7 +9,7 @@
 #SBATCH --output=/home/vramanathan/Projects/PromptTune_ddp/logs/tcgaddp_%j.log
 
 conda activate genetune
-cd ../data_utils
+cd ./data_utils
 
 ONCO_CODE="BRCA"
 #Genomics 

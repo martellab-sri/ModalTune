@@ -12,7 +12,7 @@
 conda activate promptune
 export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libffi.so.7
 
-cd ../data_utils
+cd ./data_utils
 
 INPUT_DIR=/aippmdata/public/TCGA/
 OUTPUT_DIR=/aippmdata/public/TCGA/TCGA-extractedfeatures/

@@ -185,10 +185,6 @@ class MILTextGeneTrainer_multitask(Trainer):
         :return: a tuple of model outputs to compute metrics on
         """
         self.model.train()
-
-        y_pred = []
-        y_probs = []
-        y_true = []
         total_loss = 0
         n_iters = 0
 

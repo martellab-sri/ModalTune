@@ -17,6 +17,7 @@ from functools import partial
 from pathlib import Path
 
 # Third-party imports
+import lifelines
 import numpy as np
 import pandas as pd
 import torch
@@ -53,10 +54,6 @@ class MILTextGeneTrainer_multitask_PC(MILTextGeneTrainer_multitask):
         :return: a tuple of model outputs to compute metrics on
         """
         self.model.train()
-
-        y_pred = []
-        y_probs = []
-        y_true = []
         total_loss = 0
         n_iters = 0
 

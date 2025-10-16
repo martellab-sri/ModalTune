@@ -144,6 +144,9 @@ gene_thesaurus #gene processing
 dplabtools #patch extraction
 conch #conch and conch related packages (https://github.com/mahmoodlab/CONCH)
 prov_gigapath #For running longnetvit with flash attention and other dependencies (https://github.com/prov-gigapath/prov-gigapath)
+wandb #for experiment tracking
+lifelines #for survival analysis
+sklearn #for metrics
 ```
 
 ## Running
