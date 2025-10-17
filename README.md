@@ -13,7 +13,11 @@ We propose ModalTune, a novel fine-tuning framework to interface with existing S
 
 
 ![ModalTune Methods](assets/ModalTuneSummary.png)
- 
+*Figure 1: Overview of the ModalTune framework compared to standard fine-tuning framework.*
+![ModalTune Architecture](assets/MainMethodology.png)
+*Figure 2: Overview of ModalTune. Built on a frozen pre-trained slide encoder (a), our Modal Adapter (b) integrates extra-modal features
+via the Multi-Modal Feature Injector (c) and Extractor (d). A text embedding module (e) unifies multiple tasks and cancer sites, while the
+enriched image, task, and modal embeddings are fused for training, ensuring a robust multi-modal, multi-task representation.*
 ## Key Features
 
 - **Modal Adapter:** a plug-and-play module that works with any Transformer-based SLFM, does not alter pretrained weights, and adapts to arbitrary number of input modalities
@@ -23,6 +27,11 @@ We propose ModalTune, a novel fine-tuning framework to interface with existing S
 
 We evaluate ModalTune and baselines on cancer subtype prediction and survival prediction for TCGA.
 
+![Quantitative Results](assets/interpretabilityplots.png)
+*Figure 3: Qualitative analysis of breast cancer cases, highlighting a high-risk (a) and a low-risk case (b). (1) Attention Maps (c,d) depict
+cross-modal and cross-task interactions, with heatmap colors indicating importance (red: high, blue: low). (2) Integrated Gradients
+(e,f) shows the top 10 pathways influencing risk, with orange bars indicating pathways increased risk and blue bars indicating pathways
+decreased risk.*
 ### Main Results
 We compare ModalTune against linear probed (LP) and fine-tuned (Tuned) SLFMs, single-modal baselines, and multimodal baselines -- all trained on tasks separately. 
 "cat" indicates late fusion via simple concatenation of features from each modality. 
