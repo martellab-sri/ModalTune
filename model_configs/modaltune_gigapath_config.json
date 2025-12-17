@@ -25,5 +25,6 @@
     "prompt_dropout": 0.0,
     "prompt_agg": "avg",
     "token_agg": "sum",
-    "pretrained" : true
+    "pretrained" : true,
+    "clinfeat_dim": 5
 }

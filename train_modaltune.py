@@ -193,11 +193,19 @@ class MILTextGeneTrainer_multitask(Trainer):
 
         # start_time = time.time()
         for images, coords, text, clinical, gene_data, label, case_id in dataloader:
-            if clinical is not None:
+            if n_iters>5:
+                break
+            if len(clinical):
                 clinical = clinical.to(self.device)
-            images, text, coords = images.to(self.device), text.to(self.device), coords.to(self.device)
-            if isinstance(gene_data,dict):
-                gene_data = {key: value.to(self.device) for key, value in gene_data.items()}
+            images, text, coords = (
+                images.to(self.device),
+                text.to(self.device),
+                coords.to(self.device),
+            )
+            if isinstance(gene_data, dict):
+                gene_data = {
+                    key: value.to(self.device) for key, value in gene_data.items()
+                }
             else:
                 gene_data = gene_data.to(self.device)
             text = text.squeeze(0)
@@ -207,17 +215,24 @@ class MILTextGeneTrainer_multitask(Trainer):
             with Join([self.model]) if self.args.world_size > 1 else nullcontext():
                 with torch.cuda.amp.autocast(enabled=self.args.use_amp):
                     #logit is prediction for the text prompt across different task prompts
-                    logit = self.multitask_forward(x=images, coords=coords, genes=gene_data, clinical=clinical, task_ids=[0,1,2]) #logit: (Bxnum_tasks x 256)
+                    logit = self.multitask_forward(
+                        x=images,
+                        coords=coords,
+                        genes=gene_data,
+                        clinical=clinical,
+                        task_ids=[0, 1, 2],
+                    ) #logit: (Bxnum_tasks x 256)
                     logit = logit / logit.norm(dim=-1, keepdim=True)
                     # Taken some inspiration from PromptKD repository (https://github.com/zhengli97/PromptKD)
                     # 1. KL divergence loss
                     # 2. Normalize feature vectors
                     # 3. Projection layer for text embeddings
-                    loss = self.loss_fn(nn.functional.log_softmax(logit / self.temperature, dim=1),
-                                        nn.functional.softmax(text[[0,1,3],:] / self.temperature, dim=1),
-                                        ) * (self.temperature ** 2) * 10 
+                    loss = self.loss_fn(
+                        nn.functional.log_softmax(logit / self.temperature, dim=1),
+                        nn.functional.softmax(text[[0,1,3],:] / self.temperature, dim=1),
+                    ) * (self.temperature ** 2) * 10 
 
-                self.scaler.scale(loss).backward()                
+                self.scaler.scale(loss).backward()
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
                 self.optimizer.zero_grad()
@@ -240,6 +255,9 @@ class MILTextGeneTrainer_multitask(Trainer):
         across different task prompts
         """
         self.model.eval()
+        #Make a directory inside the model weights folder
+        print(f"Saving features at {Path(self.args.output_path) / 'data'}")
+        (Path(self.args.output_path) / "data").mkdir(parents=False, exist_ok=True)
         #Get embeddings
         x_train = []
         case_id_train = []
@@ -250,7 +268,7 @@ class MILTextGeneTrainer_multitask(Trainer):
         label_list = label_list + ["case_id"]
         with torch.no_grad():
             for images, coords, text, clinical, gene_data, label, case_id in tqdm(train_dataloader):
-                if clinical is not None:
+                if len(clinical):
                     clincial = clincial.to(self.device)
                 images, coords = images.to(self.device), coords.to(self.device)
                 if isinstance(gene_data,dict):
@@ -262,7 +280,7 @@ class MILTextGeneTrainer_multitask(Trainer):
                     logit = self.multitask_forward(x=images, coords=coords, genes=gene_data, clinical=clinical, task_ids=[0,1,2])
                 x_train.append(logit.cpu().numpy())
             for images, coords, text, clinical, gene_data, label, case_id in tqdm(val_dataloader):
-                if clinical is not None:
+                if len(clinical):
                     clinical = clincial.to(self.device)
                 images, coords = images.to(self.device), coords.to(self.device)
                 if isinstance(gene_data,dict):
@@ -274,7 +292,7 @@ class MILTextGeneTrainer_multitask(Trainer):
                     logit = self.multitask_forward(x=images, coords=coords, genes=gene_data, clinical=clinical, task_ids=[0,1,2])
                 x_val.append(logit.cpu().numpy())
             for images, coords, text, clinical, gene_data, label, case_id in tqdm(test_dataloader):
-                if clinical is not None:
+                if len(clinical):
                     clinical = clinical.to(self.device)
                 images, coords = images.to(self.device), coords.to(self.device)
                 if isinstance(gene_data,dict):
@@ -321,7 +339,7 @@ class MILTextGeneTrainer_multitask(Trainer):
         with torch.no_grad():
             for image, coords, text, clinical, gene_data, label, case_id in dataloader:
                 metadata = df[df["case_id"]==case_id[0]]
-                if clinical is not None:
+                if len(clinical):
                     clinical = clinical.to(self.device)
                 image, coords = image.to(self.device), coords.to(self.device)
                 if isinstance(gene_data,dict):
@@ -386,7 +404,7 @@ class MILTextGeneTrainer_multitask(Trainer):
             df = dataloader.iterable.dataset.df
 
             for image, coords, text, clinical, gene_data, label, case_id in dataloader:
-                if clinical is not None:
+                if len(clinical):
                     clinical = clinical.to(self.device)
                 image, text, coords = image.to(self.device), text.to(self.device), coords.to(self.device)
                 metadata = df[df["case_id"]==case_id[0]]
@@ -577,13 +595,14 @@ def run_trainer(args, modaltune_trainer):
         trainer = modaltune_trainer(args)
         if not args.eval_only:
             key_metric = trainer.run()
-            #Generate embeddings for the best model weights
-            trainer.args.eval_weights = str(Path(trainer.args.output_path) / "best_model_weights.pt")
-            if args.eval_name is None:
-                strtime = time.strftime("%d%b_%H_%M_%S", time.localtime())
-                trainer.args.eval_name = args.model_config + f"_{strtime}"
-            trainer.args.eval_name = args.eval_name + f"_seed_{seed}"
-            trainer.deploy_mil()
+            if args.save_embeddings:
+                #Generate embeddings for the best model weights for future use
+                trainer.args.eval_weights = str(Path(trainer.args.output_path) / "best_model_weights.pt")
+                if args.eval_name is None:
+                    strtime = time.strftime("%d%b_%H_%M_%S", time.localtime())
+                    trainer.args.eval_name = args.model_config + f"_{strtime}"
+                trainer.args.eval_name = args.eval_name + f"_seed_{seed}"
+                trainer.deploy_mil()
         else:
             trainer.deploy_mil()
 
@@ -605,7 +624,10 @@ if __name__ == "__main__":
                         help="Number of tasks to train the model on simultaneously")
     parser.add_argument('--genomics_csv_path',type=str,default="./data/genomics.csv",
                         help="Location for mRNA sequencing data in csv format")
-    parser.add_argument('--clinical_location', default="", type=str, help="location of simple clinical features")
+    parser.add_argument('--clinical_location', default="", type=str,
+                        help="location of simple clinical features")
+    parser.add_argument("--save_embeddings", action="store_true", default=False,
+                        help="save embeddings of best model weights after training")
 
     # args for evaluating on new data
     parser.add_argument('--eval_only', default=0, type=int,
@@ -616,6 +638,8 @@ if __name__ == "__main__":
                         help="name for saving feature embeddings for evaluation")
     
     args = parser.parse_args()
+    if args.clinical_location.lower() in ["none","null","nan"]:
+        args.clinical_location = ""
 
     #Run experiments
     modaltune_trainer = MILTextGeneTrainer_multitask

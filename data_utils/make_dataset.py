@@ -446,7 +446,7 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    onco_code = args.onco_code
+    onco_code = args.onco_code.lower()
 
     ROOT_DIR = Path(__file__).resolve().parent.parent
 

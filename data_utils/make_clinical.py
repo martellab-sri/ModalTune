@@ -115,7 +115,6 @@ def prepare_clinical_features(df, path):
         )
     torch.save(d, path)
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--onco_code", default="rcc", type=str, help="data code")

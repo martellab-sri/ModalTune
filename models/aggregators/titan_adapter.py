@@ -24,7 +24,7 @@ from ..vitadapter.adapter_modules import (
     Identity_mod,
 )
 from .aggregators import Aggregator
-from ..genomic_utils.gene_baseclass import GeneBaseClass
+from ..genomic_utils import GeneBaseClass
 
 # Dynamically import using the SNAPSHOT_ID
 snapshot_module = __import__(
@@ -465,6 +465,7 @@ class TITANGeneSimpleClinicalAdapter(TITANGeneAdapter):
         pretrained=True,
         multi_task=1,
         drop_path_rate=0.1,
+        clinfeat_dim=5,
         **kwargs,
     ):
         """
@@ -589,7 +590,7 @@ class TITANGeneSimpleClinicalAdapter(TITANGeneAdapter):
             self.task_weight.apply(self._init_weights)
 
         self.clinical_mlp = nn.Sequential(
-            nn.Linear(6, embed_dim // 2),
+            nn.Linear(clinfeat_dim, embed_dim // 2),
             nn.ReLU(),
             nn.Linear(embed_dim // 2, embed_dim),
             nn.LayerNorm(embed_dim),

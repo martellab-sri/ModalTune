@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-sys.path.append(ROOT_DIR)
+sys.path.append(str(ROOT_DIR))
 
 from conch.open_clip_custom import create_model_from_pretrained, get_tokenizer, tokenize
 import numpy as np
@@ -240,7 +240,7 @@ def generate_prompts(df_analyze, model, sent_label, onco_code):
         (text_embeddings1, text_embeddings2, text_embeddings3, text_embeddings4), dim=1
     )
     print("Text examples")
-    print(text_prompts[:-5])
+    print(text_prompts[-5:])
     return text_embeddings, case_ids
 
 def make_dataset(model, onco_code, output_file):

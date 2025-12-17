@@ -6,7 +6,7 @@ Very specific to the TCGA dataset
 import sys
 from pathlib import Path
 
-sys.path.append(Path(__file__).resolve().parent.parent)
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import torch
 import numpy as np
@@ -64,10 +64,6 @@ class BaseDataset(torch.utils.data.Dataset):
         # Prepare labels and apply filtering if specified
         self.datalist = self.prepare_labels(datalist)
         
-        # Apply class balancing during training (not evaluation)
-        if self.args.balance_classes and not self.evaluate:
-            self.balance_classes()
-
         # Create DataFrame for easy case-wise access
         self.df = pd.DataFrame.from_dict(self.datalist)
         if case_wise:
@@ -79,47 +75,6 @@ class BaseDataset(torch.utils.data.Dataset):
             return len(self.case_ids)
         else:
             return len(self.datalist)
-
-    def balance_classes(self):
-        """
-        Balance classes by oversampling underrepresented classes.
-        
-        Uses stratified sampling to ensure equal representation of all classes
-        in the training dataset
-        """
-        # Build class-to-indices mapping
-        class_indices = {}
-        for i, data_dict in enumerate(self.datalist):
-            label = data_dict[self.labelset]
-            if label not in class_indices:
-                class_indices[label] = [i]
-            else:
-                class_indices[label].append(i)
-
-        # get the max number of samples in a class
-        max_len = max([len(class_indices[label]) for label in class_indices])
-
-        # shuffle inds and balance classes
-        balanced_indices = []
-        for label in class_indices:
-            self.global_random.shuffle(class_indices[label])
-            q, r = divmod(max_len, len(class_indices[label]))
-            balanced_indices.extend(class_indices[label] * q + class_indices[label][:r])
-
-        # shuffle again to mix classes
-        self.global_random.shuffle(balanced_indices)
-
-        # update datalist
-        self.datalist = [self.datalist[i] for i in balanced_indices]
-
-        # print new stats
-        if self.args.rank == 0:
-            print(f"Balanced classes, new length: {len(self.datalist)}")
-            prebalance_counter = {lab: len(dat) for lab, dat in class_indices.items()}
-            print(f"Class counter before balancing: {prebalance_counter}")
-            print(
-                f"Class counter after balancing: {dict(Counter([item[self.labelset] for item in self.datalist]))}"
-            )
 
     def prepare_labels(self, datalist):
         """
@@ -291,7 +246,7 @@ class FeaturesGeneTextDataset(BaseDataset):
                 label = label.to_dict()
 
         text = self.textembeddings[case_id]
-        clinical = None
+        clinical = []
         if self.clinicaldata:
             clinical = self.clinicaldata[case_id].float()
 

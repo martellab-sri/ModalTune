@@ -112,10 +112,13 @@ def process_all(
     data = process_only_gene(pancancer_data_loc, rna_seq_loc)
     # get pathway
     if Path(pathway_grouping_loc).exists():
+        print("Found groupings...")
         pathways_new = pd.read_csv(pathway_grouping_loc)
     else:
+        print("Did not find groupings, creating...")
         pathways_new = process_pathway(data, pathway_grouping_loc)
     # Filter same set of genes
+    print("Processing...")
     data = data[["case_id"] + pathways_new["gene"].to_list()]
     data.to_csv(processed_data_loc, index=False)
 
@@ -136,7 +139,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    onco_code = "tcga" + args.onco_code
+    onco_code = "tcga_" + args.onco_code.lower()
     raw_data_dir = Path(args.raw_data_dir)
     output_dir = Path(args.output_dir)
 

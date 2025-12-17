@@ -20,7 +20,7 @@ from ..vitadapter.adapter_modules import (
     Identity_mod,
 )
 from ..prov_gigapath.gigapath.slide_encoder import LongNetViT
-from ..genomic_utils.gene_encoder import GeneBaseClass
+from ..genomic_utils import GeneBaseClass
 from .aggregators import Aggregator
 
 from model_configs.other_configs import set_genomic_config
@@ -373,6 +373,7 @@ class LongNetGeneSimpleClinicalAdapter(LongNetGeneAdapter):
         token_agg="cat",
         pretrained=True,
         multi_task=1,
+        clinfeat_dim=5,
         **kwargs
     ):
         """
@@ -483,7 +484,7 @@ class LongNetGeneSimpleClinicalAdapter(LongNetGeneAdapter):
             self.task_weight.apply(self._init_weights)
 
         self.clinical_mlp = nn.Sequential(
-            nn.Linear(6, embed_dim // 2),
+            nn.Linear(clinfeat_dim, embed_dim // 2),
             nn.ReLU(),
             nn.Linear(embed_dim // 2, embed_dim),
             nn.LayerNorm(embed_dim),

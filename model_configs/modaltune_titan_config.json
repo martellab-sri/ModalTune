@@ -15,5 +15,6 @@
     "prompt_agg": "avg",
     "token_agg": "cat",
     "pretrained": true,
-    "drop_path_rate": 0.2
+    "drop_path_rate": 0.2,
+    "clinfeat_dim": 5
   }

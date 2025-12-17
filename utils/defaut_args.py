@@ -55,6 +55,11 @@ parser.add_argument(
     type=int,
     help="number of folds to use for k-fold cross_val",
 )
+parser.add_argument(
+    "--labelset", 
+    default='primary_class',
+    type=str,
+    help='type of labels to use for training')
 
 # ======= Dataloader parameters =======
 
@@ -85,12 +90,6 @@ parser.add_argument(
     default=None,
     type=str,
     help="json file detailing folds generated for k-fold crossval",
-)
-parser.add_argument(
-    "--balance_classes",
-    default=False,
-    type=lambda x: bool(int(x)),
-    help="whether to balance classes by duplicating samples from minority classes",
 )
 
 # ======= Output parameters =======

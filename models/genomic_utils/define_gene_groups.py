@@ -11,7 +11,7 @@ Returns
 import pandas as pd
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
+ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 def pathway_gene_groups(group_definations: int = 0, *args, **kwargs):

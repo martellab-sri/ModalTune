@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 import argparse
 
-sys.path.append(Path(__file__).resolve().parent.parent)
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import timm
 import torch
@@ -54,9 +54,9 @@ parser.add_argument(
     help="directory for storing processed files",
 )
 args = parser.parse_args()
-ONCO_CODE = args.onco_code.upper
+ONCO_CODE = args.onco_code.upper()
 
-INPUT_DIR = list(Path(args.input_dir) / f"TCGA-{ONCO_CODE}/images/").rglob("*.svs")
+INPUT_DIR = list((Path(args.input_dir) / f"TCGA-{ONCO_CODE}/images/").rglob("*.svs"))
 OUTPUT_DIR = (
     Path(args.output_dir) / f"ProvGigapath/TCGA_MIL_Patches_GigaPath_1MPP_{ONCO_CODE}"
 )
@@ -68,7 +68,7 @@ for paths in INPUT_DIR:
     print(f"Processing {slide_name}...")
     if slide_name in processed_files:
         print("Already processed...")
-        continue
+        # continue
     try:
         patch_dataset = ExtractPatches(
             wsi_file=str(paths),

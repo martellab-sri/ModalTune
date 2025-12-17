@@ -159,6 +159,26 @@ sklearn #for metrics
 ```
 
 ## Running
+### 0. Dataset Directory Structure
+
+Since this repository works with multiple datasets and modalities, we follow a consistent directory structure throughout the project. You are free to modify this structure if needed, as long as the corresponding paths are updated accordingly.
+
+- **Raw image data**:  
+  `PATHTODATABASE/TCGA/TCGA-{ONCO_CODE}/`
+
+- **Raw genomics data**:  
+  `PATHTODATABASE/TCGA/TCGA-genomics/raw/`
+
+- **Processed image features**:  
+  `PATHTODATABASE/TCGA/TCGA-extractedfeatures/`
+
+- **Processed genomics features**:  
+  `PATHTODATABASE/TCGA/TCGA-genomics/processed/`
+
+- **Processed text data**:  
+  `PATHTODATABASE/TCGA/TCGA-extractedtexts/`
+
+Please update the paths in `dataset/json_splits`, `scripts/`, and `utils/constant.py` accordingly.
 
 ### 1. Data Acquisition
 
@@ -201,7 +221,7 @@ bash scripts/submit_get_dataset.sh
 
 #### Single Cancer Type Training
 
-Ensure that the paths in `scripts/submit_modaltune.sh` are correctly set for your dataset and model (prov-gigapath/titan) configuration. By default, we only consider imaging and genomic modalities. To include clinical information also ensure the paths are added and `$TYPE=clinical` in the `scripts/submit_modaltune.sh`. Then run for each cancer type:
+Ensure that the paths in `scripts/submit_modaltune.sh` are correctly set for your dataset and model (prov-gigapath/titan) configuration. By default, we only consider imaging and genomic modalities. To include clinical information also ensure the paths are added and `$TYPE=gene_clinical` in the `scripts/submit_modaltune.sh`. Then run for each cancer type:
 ```bash
 bash scripts/submit_modaltune.sh
 ```
@@ -213,9 +233,9 @@ bash scripts/submit_modaltune.sh
 ```
 
 ### Evaluation Only (Pre-trained Model)
-For out-of-distribution evaluation on a new test set, modify the paths and OOD cancer types in `scripts/deploy_OOD_modaltune.sh` and run:
+For out-of-distribution evaluation or testing on a new test set, modify the paths, model weights and cancer types in `scripts/deploy_modaltune.sh` and run:
 ```bash
-bash scripts/deploy_OOD_modaltune.sh
+bash scripts/deploy_modaltune.sh
 ```
 
 ## Acknowledgments
@@ -245,11 +265,13 @@ We would like to express our gratitude to the following projects and resources t
 If you use ModalTune in your research, please cite:
 
 ```bibtex
-@article{ramanathan2025modaltune,
-  title={ModalTune: Fine-Tuning Slide-Level Foundation Models with Multi-Modal Information for Multi-task Learning in Digital Pathology},
-  author={Ramanathan, Vishwesh and Xu, Tony and Pati, Pushpak and Ahmed, Faruk and Goubran, Maged and Martel, Anne L},
-  journal={arXiv preprint arXiv:2503.17564},
-  year={2025}
+@InProceedings{Ramanathan_2025_ICCV,
+    author    = {Ramanathan, Vishwesh and Xu, Tony and Pati, Pushpak and Ahmed, Faruk and Goubran, Maged and Martel, Anne L.},
+    title     = {ModalTune: Fine-Tuning Slide-Level Foundation Models with Multi-Modal Information for Multi-task Learning in Digital Pathology},
+    booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV)},
+    month     = {October},
+    year      = {2025},
+    pages     = {23912-23923}
 }
 ```
 

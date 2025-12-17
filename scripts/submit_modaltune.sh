@@ -10,24 +10,23 @@
 
 conda activate genetune
 
-PROJECT_DIR=/home/vramanathan/PromptTune_ddp/
+PROJECT_DIR=/home/vramanathan/Projects/ModalTune/
 SEED=0
 
-# ONCO_CODE="BRCA"
+ONCO_CODE="BRCA"
 # ONCO_CODE="NSCLC"
 # ONCO_CODE="GBMLGG"
 # ONCO_CODE="RCC"
-ONCO_CODE="PANCANCER"
+# ONCO_CODE="PANCANCER"
 # ONCO_CODE="COADREAD" #OOD Datasets
 # ONCO_CODE="BLCA" #OOD Datasets
-
 
 if [ "$ONCO_CODE" = "PANCANCER" ]; then
     SCRIPTNAME=${PROJECT_DIR}/train_modaltune_pancancer.py
     NUM_CLASSES=2,2,2,3
 else
     SCRIPTNAME=${PROJECT_DIR}/train_modaltune.py
-    if [ "$ONCO_CODE" = "RCC" ];
+    if [ "$ONCO_CODE" = "RCC" ]; then
         NUM_CLASSES=3 #For RCC
     else
         NUM_CLASSES=2 #For rest of the cancer sites
@@ -37,28 +36,30 @@ fi
 OUTPUT_DIR=/home/vramanathan/scratch/amgrp/prompttune_outputs
 TEXT_LOCATION=/aippmdata/public/TCGA/TCGA-extractedtexts/${ONCO_CODE}_textembeddings_conch_ViT-B-16_all_v3.pt
 GENE_LOCATION=/aippmdata/public/TCGA/TCGA-genomics/processed/tcga_${ONCO_CODE,,}_xena_clean_pathway.csv
-CLIN_LOCATION=""
+CLIN_LOCATION=/aippmdata/public/TCGA/TCGA-extractedtexts/simple_clinical_dict_${ONCO_CODE,,}.pt
+# CLIN_LOCATION=None
 
-# MODEL_CONFIG=modaltune_titan_config.json
-MODEL_CONFIG=modaltune_gigapath_config.json
+MODEL_CONFIG=modaltune_titan_config
+# MODEL_CONFIG=modaltune_gigapath_config
 
 SAVE_NAME=test_${MODEL_CONFIG}_${ONCO_CODE}
 
-TYPE=gene
-# TYPE=gene_clinical
+# TYPE=gene
+TYPE=gene_clinical
 
-# MIL_NAME=titan_${TYPE}_adapter
-MIL_NAME=longnetvit_${TYPE}_adapter #provgigapath
+MIL_NAME=titan_${TYPE}_adapter
+# MIL_NAME=longnetvit_${TYPE}_adapter #provgigapath
 
-# JSON_EXT=_titan #for titan
-JSON_EXT="" #for provgigapath
+JSON_EXT=_titan #for titan
+# JSON_EXT="" #for provgigapath
 
 MULTI_SEED=1
 NUM_TASKS=3
 LR=0.0001
-# THRESHOLD=15000 #For TITAN
-THRESHOLD=25000 #For Prov-Gigapath
+THRESHOLD=15000 #For TITAN
+# THRESHOLD=25000 #For Prov-Gigapath
 
+# Comment out the --save_embeddings if embeddings not needed
 python $SCRIPTNAME \
   --train_json ${PROJECT_DIR}/dataset/json_splits/tcga_${ONCO_CODE,,}/train_${ONCO_CODE,,}_cls_feat${JSON_EXT}.json\
   --val_json ${PROJECT_DIR}/dataset/json_splits/tcga_${ONCO_CODE,,}/val_${ONCO_CODE,,}_cls_feat${JSON_EXT}.json \
@@ -72,7 +73,7 @@ python $SCRIPTNAME \
   --model_config $MODEL_CONFIG \
   --num_classes $NUM_CLASSES \
   --lr $LR \
-  --num_epochs 15 \
+  --num_epochs 1 \
   --weight_decay 0.0005 \
   --wandb_mode disabled \
   --save_interval 1 \
@@ -86,4 +87,5 @@ python $SCRIPTNAME \
   --eval_name $SAVE_NAME \
   --seed $SEED \
   --threshold $THRESHOLD \
-  --multi_seed $MULTI_SEED
+  --multi_seed $MULTI_SEED \
+  --save_embeddings \

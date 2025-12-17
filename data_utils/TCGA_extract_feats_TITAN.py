@@ -6,7 +6,7 @@ import sys
 from pathlib import Path
 import argparse
 
-sys.path.append(Path(__file__).resolve().parent.parent)
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import torch
 from pathlib import Path
@@ -52,9 +52,9 @@ conch.to(DEVICE)
 titan.eval()
 conch.eval()
 
-INPUT_DIR = list(Path(args.input_dir) / f"TCGA-{ONCO_CODE}/images/").rglob("*.svs")
+INPUT_DIR = list((Path(args.input_dir) / f"TCGA-{ONCO_CODE}/images/").rglob("*.svs"))
 OUTPUT_DIR = (
-    Path(args.output_dir) / f"TITAN/TCGA_MIL_Patches_CONCHv1.5_{MPP}MPP_{ONCO_CODE}"
+    Path(args.output_dir) / f"CONCHv1.5/TCGA_MIL_Patches_CONCHv1.5_{MPP}MPP_{ONCO_CODE}"
 )
 SLIDE_EMB_DIR = Path(args.output_dir) / f"TITAN/TCGA_SLIDEEMB_TITAN_{ONCO_CODE}"
 
@@ -62,7 +62,6 @@ Path.mkdir(OUTPUT_DIR, parents=False, exist_ok=True)
 Path.mkdir(SLIDE_EMB_DIR, parents=False, exist_ok=True)
 
 processed_files = [files.stem.split("_")[0] for files in OUTPUT_DIR.glob("*.pt")]
-
 for paths in INPUT_DIR:
     slide_name = paths.stem.split(".")[0]
     print(f"Processing {slide_name}...")
@@ -107,13 +106,8 @@ for paths in INPUT_DIR:
             all_coords = torch.stack(all_coords, dim=0)
 
         print("Extracted {} Patch features".format(len(all_feats)))
-        torch.save(
-            {"features": all_feats, "coords": all_coords},
-            str(OUTPUT_DIR / f"{slide_name}_featvec.pt"),
-        )
 
         # Extracting slide embeddings
-        # extract slide embedding
         with torch.autocast(
             device_type="cuda", dtype=torch.bfloat16
         ), torch.inference_mode():
@@ -124,6 +118,13 @@ for paths in INPUT_DIR:
             )
 
         print("Extracted Slide features".format(len(all_feats)))
+
+        #Save patch features
+        torch.save(
+            {"features": all_feats, "coords": all_coords},
+            str(OUTPUT_DIR / f"{slide_name}_featvec.pt"),
+        )
+        #Save slide features
         torch.save(
             slide_embedding.to(torch.float32),
             str(SLIDE_EMB_DIR / f"{slide_name}_featvec.pt"),

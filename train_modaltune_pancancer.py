@@ -34,7 +34,7 @@ from utils.defaut_args import parser
 from utils.constants import NUM_SITES, SITE_LABEL
 from utils.test_utils_pancancer import perform_testing_pancancer
 from data_utils.datasets import FeaturesGeneTextDataset
-from .train_modaltune import MILTextGeneTrainer_multitask, run_trainer
+from train_modaltune import MILTextGeneTrainer_multitask, run_trainer
 
 CFD_DIR = Path(__file__).resolve().parent / "model_configs"
 
@@ -62,7 +62,7 @@ class MILTextGeneTrainer_multitask_PC(MILTextGeneTrainer_multitask):
 
         # start_time = time.time()
         for images, coords, text, clinical, gene_data, label, case_id in dataloader:
-            if clinical is not None:
+            if len(clinical):
                 clinical = clinical.to(self.device)
             images, text, coords = (
                 images.to(self.device),
@@ -149,7 +149,7 @@ class MILTextGeneTrainer_multitask_PC(MILTextGeneTrainer_multitask):
                 metadata = df[df["case_id"] == case_id[0]]
                 project_id = metadata.iloc[0]["project_id"]
                 logreg_idx = self.DATASET_MAP[project_id]
-                if clinical is not None:
+                if len(clinical):
                     clinical = clinical.to(self.device)
                 image, coords = image.to(self.device), coords.to(self.device)
                 if isinstance(gene_data, dict):
@@ -251,7 +251,7 @@ class MILTextGeneTrainer_multitask_PC(MILTextGeneTrainer_multitask):
             df = dataloader.iterable.dataset.df
 
             for image, coords, text, clinical, gene_data, label, case_id in dataloader:
-                if clinical is not None:
+                if len(clinical):
                     clinical = clinical.to(self.device)
                 image, text, coords = (
                     image.to(self.device),
@@ -552,6 +552,12 @@ if __name__ == "__main__":
         type=str,
         help="location of simple clinical features",
     )
+    parser.add_argument(
+        "--save_embeddings", 
+        action="store_true", 
+        default=False, 
+        help="save embeddings of best model weights after training"
+    )
 
     # args for evaluating on new data
     parser.add_argument(
@@ -572,6 +578,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     args.num_classes = [int(x) for x in args.num_classes.split(",")]
+    if args.clinical_location.lower() in ["none","null","nan"]:
+        args.clinical_location = ""
 
     # Run experiments
     modaltune_trainer = MILTextGeneTrainer_multitask_PC

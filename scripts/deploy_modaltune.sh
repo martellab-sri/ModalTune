@@ -10,38 +10,35 @@
 
 conda activate genetune
 
-PROJECT_DIR=/home/vramanathan/PromptTune_ddp/
+PROJECT_DIR=/home/vramanathan/Projects/ModalTune/
 SEED=0
 
+#ID Datasets
 # ONCO_CODE="BRCA"
 # ONCO_CODE="NSCLC"
 # ONCO_CODE="GBMLGG"
 # ONCO_CODE="RCC"
 # ONCO_CODE="PANCANCER"
-ONCO_CODE="BLCA" #OOD Datasets
-# ONCO_CODE="COADREAD" #OOD Datasets
+#OOD Datasets
+# ONCO_CODE="BLCA" 
+ONCO_CODE="COADREAD"
 
-if [ "$ONCO_CODE" = "PANCANCER" ]; then
-    SCRIPTNAME=${PROJECT_DIR}/train_modaltune_pancancer.py
-    NUM_CLASSES=2,2,2,3
+SCRIPTNAME=${PROJECT_DIR}/train_modaltune.py
+if [ "$ONCO_CODE" = "RCC" ]; then
+    NUM_CLASSES=3 #For RCC
 else
-    SCRIPTNAME=${PROJECT_DIR}/train_modaltune.py
-    if [ "$ONCO_CODE" = "RCC" ];
-        NUM_CLASSES=3 #For RCC
-    else
-        NUM_CLASSES=2 #For rest of the cancer sites
-    fi
+    NUM_CLASSES=2 #For rest of the cancer sites
 fi
 
-OUTPUT_DIR=/home/vramanathan/scratch/amgrp/prompttune_outputs
 TEXT_LOCATION=/aippmdata/public/TCGA/TCGA-extractedtexts/${ONCO_CODE}_textembeddings_conch_ViT-B-16_all_v3.pt
 GENE_LOCATION=/aippmdata/public/TCGA/TCGA-genomics/processed/tcga_${ONCO_CODE,,}_xena_clean_pathway.csv
-CLIN_LOCATION=""
+CLIN_LOCATION=None
 
 # MODEL_CONFIG=modaltune_titan_config.json
-MODEL_CONFIG=modaltune_gigapath_config.json
+MODEL_CONFIG=modaltune_gigapath_config
+MODEL_WEIGHTS=/home/vramanathan/scratch/amgrp/prompttune_outputs/longnetvit_gene_adapter_exp_17Dec_14_36_39_seed_0/best_model_weights.pt
 
-SAVE_NAME=test_${MODEL_CONFIG}_${ONCO_CODE}_OOD
+SAVE_NAME=deploy_${MODEL_CONFIG}_${ONCO_CODE}
 
 # JSON_EXT=_titan #for titan
 JSON_EXT="" #for provgigapath

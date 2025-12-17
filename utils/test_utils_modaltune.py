@@ -163,7 +163,7 @@ def perform_testing(x_train, df_train, x_test, df_test, penalizer=0.1):
     print("######## Diagnosis ########")
     for i in range(n_tasks):
         print(f"Model - {embedding_text[i]}")
-        test_(
+        test_label(
             x_train[:, i, :],
             df_train["primary_class"].values,
             x_test[:, i, :],
