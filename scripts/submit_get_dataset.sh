@@ -1,24 +1,14 @@
 #!/bin/bash
-
-# SLURM SUBMIT SCRIPT
-#SBATCH --cpus-per-task=20         # CPU cores/threds
-#SBATCH --nodes=1
-#SBATCH --gres=gpu:a100:1
-#SBATCH --mem=100G                  # more workers (cpus) require more ram
-#SBATCH --time=2-0:00:00
-#SBATCH --output=/home/vramanathan/Projects/PromptTune_ddp/logs/tcgaddp_%j.log
-
-conda activate genetune
 cd ./data_utils
 
 ONCO_CODE="BRCA"
 #Genomics 
 #consists of folder containing raw genomics data
-RAW_GENE_DIR="/aippmdata/public/TCGA/TCGA-genomics/raw/"
-OUTPUT_GENE_DIR="/aippmdata/public/TCGA/TCGA-genomics/processed/"
-OUTPUT_CLIN_DIR="/aippmdata/public/TCGA/TCGA-extractedtexts"
-RAW_IMG_DIR="/aippmdata/public/TCGA/"
-FEAT_DIR="/aippmdata/public/TCGA/TCGA-extractedfeatures/ProvGigapath/"
+RAW_GENE_DIR="PATHTODATABASE/TCGA-genomics/raw/"
+OUTPUT_GENE_DIR="PATHTODATABASE/TCGA-genomics/processed/"
+OUTPUT_CLIN_DIR="PATHTODATABASE/TCGA-extractedtexts"
+RAW_IMG_DIR="PATHTODATABASE/"
+FEAT_DIR="PATHTODATABASE/TCGA-extractedfeatures/ProvGigapath/"
 
 ### RUN THIS SCRIPT AFTER PATCH FEATURES HAVE BEEN EXTRACTED
 #Make dataset

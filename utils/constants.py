@@ -12,14 +12,14 @@ import os
 # =============================================================================
 
 # Gigapath model weights location
-GIGAPATH_WEIGHT_LOC = "/aippmdata/trained_models/Martel_lab/pathology/huggingface/hub/models--prov-gigapath--prov-gigapath/"
+GIGAPATH_WEIGHT_LOC = "/huggingface/hub/models--prov-gigapath--prov-gigapath/"
 
 # CONCH (Conversational Oncology CHatbot) model configuration
 CONCH_CFG = "conch_ViT-B-16"
-CONCH_CHECKPOINT_PATH = "/aippmdata/trained_models/Martel_lab/pathology/SSL_CONCH/CONCH/checkpoints/conch/conch.pt"
+CONCH_CHECKPOINT_PATH = "/huggingface/CONCH/checkpoints/conch/conch.pt"
 
 # TITAN model configuration
-TITAN_CODE_PATH = "/aippmdata/trained_models/Martel_lab/pathology/huggingface/models/models--MahmoodLab--TITAN/snapshots/"
+TITAN_CODE_PATH = "/huggingface/models/models--MahmoodLab--TITAN/snapshots/"
 TITAN_SNAPSHOT_ID = "b2fb4f475256eb67c6e9ccbf2d6c9c3f25f20791"
 
 # =============================================================================
