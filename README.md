@@ -128,7 +128,7 @@ ModalTune/
 │   └── test_utils_pancancer.py     # Pan-cancer evaluation utilities
 │
 └── scripts/                        # Execution scripts
-    ├── deploy_OOD_modaltune.sh     # Out-of-distribution evaluation
+    ├── deploy_modaltune.sh         # Deployment script
     ├── submit_extract_patches.sh   # Patch extraction pipeline
     ├── submit_get_dataset.sh       # Dataset creation pipeline
     └── submit_modaltune.sh         # Training pipeline
